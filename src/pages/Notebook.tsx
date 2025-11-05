@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { VoiceRecorder } from "@/components/VoiceRecorder";
 
 interface Memory {
   id: string;
@@ -183,7 +184,7 @@ const Notebook = () => {
                       Write or speak about a precious moment. Be as detailed as you'd like.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="py-4">
+                  <div className="space-y-4 py-4">
                     <Textarea
                       placeholder="Tell your story... What happened? Who was there? How did it make you feel?"
                       value={content}
@@ -191,6 +192,9 @@ const Notebook = () => {
                       rows={8}
                       className="resize-none"
                       required
+                    />
+                    <VoiceRecorder 
+                      onTranscription={(text) => setContent((prev) => prev + (prev ? " " : "") + text)}
                     />
                   </div>
                   <DialogFooter>
