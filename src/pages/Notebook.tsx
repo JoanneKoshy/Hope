@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2 } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { VoiceRecorder } from "@/components/VoiceRecorder";
@@ -37,6 +38,7 @@ const Notebook = () => {
   const [content, setContent] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [deleteMemoryId, setDeleteMemoryId] = useState<string | null>(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -146,6 +148,22 @@ const Notebook = () => {
     toast({ title: "Link copied!", description: "Share this link with family and friends" });
   };
 
+  const handleDeleteMemory = async () => {
+    if (!deleteMemoryId) return;
+
+    try {
+      await deleteDoc(doc(db, "memories", deleteMemoryId));
+      toast({ title: "Memory deleted" });
+      setDeleteMemoryId(null);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!notebook) return null;
 
   return (
@@ -236,18 +254,28 @@ const Notebook = () => {
               {memories.map((memory) => (
                 <Card key={memory.id} className="shadow-soft hover:shadow-medium transition-all animate-fade-in">
                   <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-sm text-muted-foreground font-normal">
-                        {memory.createdAt?.toDate().toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </CardTitle>
-                      <Badge variant="secondary" className={getSentimentColor(memory.sentiment)}>
-                        {getSentimentIcon(memory.sentiment)}
-                        <span className="ml-1 capitalize">{memory.sentiment || "neutral"}</span>
-                      </Badge>
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="flex-1 flex justify-between items-start">
+                        <CardTitle className="text-sm text-muted-foreground font-normal">
+                          {memory.createdAt?.toDate().toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </CardTitle>
+                        <Badge variant="secondary" className={getSentimentColor(memory.sentiment)}>
+                          {getSentimentIcon(memory.sentiment)}
+                          <span className="ml-1 capitalize">{memory.sentiment || "neutral"}</span>
+                        </Badge>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeleteMemoryId(memory.id)}
+                        className="text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -270,6 +298,23 @@ const Notebook = () => {
           )}
         </div>
       </main>
+
+      <AlertDialog open={!!deleteMemoryId} onOpenChange={(open) => !open && setDeleteMemoryId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Memory?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This memory and its photo will be permanently deleted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteMemory} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
