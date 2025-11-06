@@ -20,10 +20,7 @@ const Landing = () => {
             <span className="text-sm font-medium text-muted-foreground">Preserve memories forever</span>
           </div>
           
-          <h1 className="text-8xl md:text-9xl lg:text-[12rem] font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-none tracking-tighter animate-scale-in" style={{ 
-            backgroundSize: '200% auto',
-            animation: 'scale-in 0.6s ease-out, shimmer 3s linear infinite'
-          }}>
+          <h1 className="text-8xl md:text-9xl lg:text-[12rem] font-bold mb-6 leading-none tracking-tighter animate-scale-in metallic-text">
             Hope
           </h1>
           
