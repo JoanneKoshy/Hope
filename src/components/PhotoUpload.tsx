@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { auth, storage } from "@/lib/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import imageCompression from "browser-image-compression";
+import { Progress } from "@/components/ui/progress";
 
 interface PhotoUploadProps {
   onPhotoUploaded: (url: string) => void;
@@ -13,6 +15,7 @@ interface PhotoUploadProps {
 
 export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: PhotoUploadProps) => {
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -30,17 +33,8 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please select an image smaller than 5MB",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setUploading(true);
+    setUploadProgress(0);
 
     try {
       const user = auth.currentUser;
@@ -48,23 +42,53 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
         throw new Error("User not authenticated");
       }
 
+      // Compress image for faster upload
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: file.type,
+      };
+
+      toast({
+        title: "Compressing image...",
+        description: "Optimizing your photo for faster upload",
+      });
+
+      const compressedFile = await imageCompression(file, options);
+
       // Create a unique file name
       const fileExt = file.name.split('.').pop();
       const fileName = `memory-photos/${user.uid}/${Date.now()}.${fileExt}`;
 
-      // Upload to Firebase Storage
+      // Upload to Firebase Storage with progress tracking
       const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, file);
+      const uploadTask = uploadBytesResumable(storageRef, compressedFile);
 
-      // Get download URL
-      const downloadURL = await getDownloadURL(storageRef);
-
-      onPhotoUploaded(downloadURL);
-      
-      toast({
-        title: "Photo uploaded!",
-        description: "Your photo has been added to the memory",
-      });
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(Math.round(progress));
+        },
+        (error) => {
+          console.error('Upload error:', error);
+          throw error;
+        },
+        async () => {
+          // Upload completed successfully
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          onPhotoUploaded(downloadURL);
+          
+          toast({
+            title: "Photo uploaded!",
+            description: "Your photo has been added to the memory",
+          });
+          
+          setUploading(false);
+          setUploadProgress(0);
+        }
+      );
     } catch (error: any) {
       console.error('Upload error:', error);
       toast({
@@ -72,8 +96,9 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
         description: error.message,
         variant: "destructive",
       });
-    } finally {
       setUploading(false);
+      setUploadProgress(0);
+    } finally {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -115,25 +140,30 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
           </Button>
         </div>
       ) : (
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-        >
-          {uploading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Uploading...
-            </>
-          ) : (
-            <>
-              <Camera className="w-4 h-4 mr-2" />
-              Add Photo
-            </>
+        <div className="space-y-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Uploading... {uploadProgress}%
+              </>
+            ) : (
+              <>
+                <Camera className="w-4 h-4 mr-2" />
+                Add Photo
+              </>
+            )}
+          </Button>
+          {uploading && (
+            <Progress value={uploadProgress} className="w-full" />
           )}
-        </Button>
+        </div>
       )}
     </div>
   );
