@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2, Trash2, TrendingUp } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2, Trash2, TrendingUp, Pencil } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { VoiceRecorder } from "@/components/VoiceRecorder";
@@ -45,6 +45,7 @@ const Notebook = () => {
   const [loading, setLoading] = useState(false);
   const [deleteMemoryId, setDeleteMemoryId] = useState<string | null>(null);
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
+  const [editingMemory, setEditingMemory] = useState<Memory | null>(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -116,20 +117,34 @@ const Notebook = () => {
       const beautifiedContent = beautifyData?.beautifiedContent || content;
       const sentiment = detectSentiment(beautifiedContent);
 
-      await addDoc(collection(db, "memories"), {
-        title,
-        content: beautifiedContent,
-        notebookId: id,
-        userId: user.uid,
-        sentiment,
-        photoUrl: photoUrl || null,
-        createdAt: serverTimestamp(),
-      });
+      if (editingMemory) {
+        // Update existing memory
+        const { updateDoc } = await import("firebase/firestore");
+        await updateDoc(doc(db, "memories", editingMemory.id), {
+          title,
+          content: beautifiedContent,
+          sentiment,
+          photoUrl: photoUrl || null,
+        });
+        toast({ title: "Memory updated!" });
+      } else {
+        // Create new memory
+        await addDoc(collection(db, "memories"), {
+          title,
+          content: beautifiedContent,
+          notebookId: id,
+          userId: user.uid,
+          sentiment,
+          photoUrl: photoUrl || null,
+          createdAt: serverTimestamp(),
+        });
+        toast({ title: "Memory saved!" });
+      }
 
-      toast({ title: "Memory saved!" });
       setTitle("");
       setContent("");
       setPhotoUrl("");
+      setEditingMemory(null);
       setIsDialogOpen(false);
     } catch (error: any) {
       toast({
@@ -218,7 +233,15 @@ const Notebook = () => {
           </div>
 
           <div className="flex justify-center mb-6 sm:mb-8">
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <Dialog open={isDialogOpen} onOpenChange={(open) => {
+              setIsDialogOpen(open);
+              if (!open) {
+                setEditingMemory(null);
+                setTitle("");
+                setContent("");
+                setPhotoUrl("");
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button size="lg" className="shadow-soft">
                   <Plus className="w-4 h-4 mr-2" />
@@ -228,9 +251,14 @@ const Notebook = () => {
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
                 <form onSubmit={handleCreateMemory}>
                   <DialogHeader>
-                    <DialogTitle className="text-lg sm:text-xl">Capture a Memory</DialogTitle>
+                    <DialogTitle className="text-lg sm:text-xl">
+                      {editingMemory ? "Edit Memory" : "Capture a Memory"}
+                    </DialogTitle>
                     <DialogDescription className="text-sm">
-                      Write or speak about a precious moment. Be as detailed as you'd like.
+                      {editingMemory 
+                        ? "Update your memory details"
+                        : "Write or speak about a precious moment. Be as detailed as you'd like."
+                      }
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
@@ -267,7 +295,7 @@ const Notebook = () => {
                   </div>
                   <DialogFooter>
                     <Button type="submit" disabled={loading}>
-                      {loading ? "Saving..." : "Save Memory"}
+                      {loading ? "Saving..." : (editingMemory ? "Update Memory" : "Save Memory")}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -416,6 +444,22 @@ const Notebook = () => {
                       className="text-muted-foreground hover:text-primary"
                     >
                       <Share2 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingMemory(selectedMemory);
+                        setTitle(selectedMemory.title);
+                        setContent(selectedMemory.content);
+                        setPhotoUrl(selectedMemory.photoUrl || "");
+                        setSelectedMemory(null);
+                        setIsDialogOpen(true);
+                      }}
+                      className="text-muted-foreground hover:text-primary"
+                    >
+                      <Pencil className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
