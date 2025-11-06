@@ -44,16 +44,12 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
 
       // Compress image for faster upload
       const options = {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1920,
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1280,
         useWebWorker: true,
         fileType: file.type,
+        initialQuality: 0.8,
       };
-
-      toast({
-        title: "Compressing image...",
-        description: "Optimizing your photo for faster upload",
-      });
 
       const compressedFile = await imageCompression(file, options);
 
