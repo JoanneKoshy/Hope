@@ -73,11 +73,11 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
         </CardHeader>
         <CardContent>
           <div className="space-y-6 text-center">
-            <blockquote className="text-2xl md:text-3xl leading-relaxed font-serif py-8 px-6 border-l-4 border-primary/50 bg-muted/30 rounded-r-lg" style={{ fontFamily: 'cursive' }}>
-              "Every journey begins with a single step. Start capturing your precious moments today! 🌱"
+            <blockquote className="text-lg leading-relaxed font-cormorant italic py-6 px-6 text-foreground/80">
+              "Every journey begins with a single step. Start capturing your precious moments today."
             </blockquote>
-            <p className="text-muted-foreground">
-              Add memories to your notebook and watch beautiful reflections bloom in your garden
+            <p className="text-sm text-muted-foreground">
+              Add memories to your notebook and watch beautiful reflections bloom in your garden 🌱
             </p>
           </div>
         </CardContent>
@@ -103,7 +103,7 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
           </div>
         ) : reflection ? (
           <div className="space-y-6 animate-fade-in">
-            <blockquote className="text-2xl md:text-3xl leading-relaxed font-serif text-center py-8 px-6 border-l-4 border-primary/50 bg-muted/30 rounded-r-lg" style={{ fontFamily: 'cursive' }}>
+            <blockquote className="text-lg leading-relaxed font-cormorant italic text-center py-6 px-6 text-foreground/80">
               "{reflection}"
             </blockquote>
             <div className="flex justify-center">
@@ -137,7 +137,7 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
               </div>
             ) : (
               <div className="text-center space-y-6">
-                <p className="text-xl leading-relaxed italic font-serif text-muted-foreground py-4">
+                <p className="text-lg leading-relaxed font-cormorant italic text-muted-foreground py-4">
                   Your memories are waiting to bloom into a beautiful reflection...
                 </p>
                 <Button onClick={generateReflection} variant="default" size="lg" className="shadow-sm">
