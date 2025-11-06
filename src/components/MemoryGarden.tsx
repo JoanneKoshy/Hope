@@ -90,45 +90,49 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
             </Button>
           </div>
         ) : reflection ? (
-          <div className="space-y-4 animate-fade-in">
-            <p className="text-lg leading-relaxed italic">{reflection}</p>
-            <Button 
-              onClick={generateReflection} 
-              variant="ghost" 
-              size="sm"
-              className="text-primary hover:text-primary"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Generate New Reflection
-                </>
-              )}
-            </Button>
+          <div className="space-y-6 animate-fade-in">
+            <blockquote className="text-2xl leading-relaxed italic font-serif text-center py-6 px-4 border-l-4 border-primary/50">
+              "{reflection}"
+            </blockquote>
+            <div className="flex justify-center">
+              <Button 
+                onClick={generateReflection} 
+                variant="outline" 
+                size="lg"
+                className="text-primary hover:text-primary shadow-sm"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Creating your reflection...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Generate Self Reflection
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {loading ? (
-              <div className="flex items-center py-4">
-                <Loader2 className="w-5 h-5 animate-spin text-primary mr-2" />
-                <span className="text-muted-foreground">Creating your reflection...</span>
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-5 h-5 animate-spin text-primary mr-3" />
+                <span className="text-muted-foreground text-lg">Creating your reflection...</span>
               </div>
             ) : (
-              <>
-                <p className="text-lg leading-relaxed italic text-muted-foreground">
+              <div className="text-center space-y-6">
+                <p className="text-xl leading-relaxed italic font-serif text-muted-foreground py-4">
                   Your memories are waiting to bloom into a beautiful reflection...
                 </p>
-                <Button onClick={generateReflection} variant="outline">
+                <Button onClick={generateReflection} variant="default" size="lg" className="shadow-sm">
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Generate Reflection
+                  Generate Self Reflection
                 </Button>
-              </>
+              </div>
             )}
           </div>
         )}
