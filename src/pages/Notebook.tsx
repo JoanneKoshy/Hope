@@ -10,6 +10,7 @@ import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { VoiceRecorder } from "@/components/VoiceRecorder";
+import { PhotoUpload } from "@/components/PhotoUpload";
 
 interface Memory {
   id: string;
@@ -17,6 +18,7 @@ interface Memory {
   notebookId: string;
   userId: string;
   sentiment?: "happy" | "sad" | "neutral";
+  photoUrl?: string;
   createdAt: any;
 }
 
@@ -33,6 +35,7 @@ const Notebook = () => {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [content, setContent] = useState("");
+  const [photoUrl, setPhotoUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -96,11 +99,13 @@ const Notebook = () => {
         notebookId: id,
         userId: user.uid,
         sentiment,
+        photoUrl: photoUrl || null,
         createdAt: serverTimestamp(),
       });
 
       toast({ title: "Memory saved!" });
       setContent("");
+      setPhotoUrl("");
       setIsDialogOpen(false);
     } catch (error: any) {
       toast({
@@ -193,6 +198,11 @@ const Notebook = () => {
                       className="resize-none"
                       required
                     />
+                    <PhotoUpload
+                      photoUrl={photoUrl}
+                      onPhotoUploaded={setPhotoUrl}
+                      onPhotoRemoved={() => setPhotoUrl("")}
+                    />
                     <VoiceRecorder 
                       onTranscription={(text) => setContent((prev) => prev + (prev ? " " : "") + text)}
                     />
@@ -241,6 +251,15 @@ const Notebook = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
+                    {memory.photoUrl && (
+                      <div className="mb-4 rounded-lg overflow-hidden">
+                        <img 
+                          src={memory.photoUrl} 
+                          alt="Memory" 
+                          className="w-full h-64 object-cover"
+                        />
+                      </div>
+                    )}
                     <p className="text-lg leading-relaxed font-serif whitespace-pre-wrap">
                       {memory.content}
                     </p>
