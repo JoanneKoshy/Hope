@@ -8,14 +8,14 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-gradient-warm">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 pt-20 pb-32">
-        <div className="text-center max-w-4xl mx-auto animate-fade-in">
+      <div className="container h-screen flex flex-col gap-5 justify-center mx-auto px-4 pt-20 pb-32">
+        <div className="text-center max-w-4xl  mx-auto animate-fade-in">
           <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-card rounded-full shadow-soft">
             <Heart className="w-4 h-4 text-primary" />
             <span className="text-sm text-muted-foreground">Preserve memories forever</span>
           </div>
           
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-10xl md:text-9xl font-bold mb-10 bg-gradient-primary animate-float bg-clip-text text-transparent">
             Hope
           </h1>
           
