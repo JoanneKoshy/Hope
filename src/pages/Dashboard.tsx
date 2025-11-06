@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -59,6 +60,9 @@ const Dashboard = () => {
         });
       }
       setAllMemories(allMemoriesData);
+      
+      // Set loading to false only after everything is loaded
+      setInitialLoading(false);
     });
 
     return () => unsubscribe();
@@ -99,8 +103,22 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-warm flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="w-16 h-16 text-primary mx-auto mb-4 animate-float" />
+          <h2 className="text-2xl font-semibold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+            Loading your memories...
+          </h2>
+          <p className="text-muted-foreground">Preparing your memory garden</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-gradient-warm animate-fade-in">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -116,9 +134,11 @@ const Dashboard = () => {
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
-          <MemoryGarden memories={allMemories} notebookCount={notebooks.length} />
+          <div className="animate-slide-up">
+            <MemoryGarden memories={allMemories} notebookCount={notebooks.length} />
+          </div>
           
-          <div className="flex justify-between items-center mb-8 mt-8">
+          <div className="flex justify-between items-center mb-8 mt-8 animate-fade-in">
             <div>
               <h2 className="text-4xl font-bold mb-2">Your Memory Notebooks</h2>
               <p className="text-muted-foreground">Organize life stories into beautiful collections</p>

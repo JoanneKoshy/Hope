@@ -48,7 +48,9 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
   };
 
   useEffect(() => {
-    if (memories.length > 0 && !reflection) {
+    // Only auto-generate if we have memories and haven't generated yet
+    // But skip the loading state by generating silently in the background
+    if (memories.length > 0 && !reflection && !loading) {
       generateReflection();
     }
   }, [memories.length]);
@@ -58,7 +60,7 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
   }
 
   return (
-    <Card className="shadow-soft border-primary/20 bg-gradient-subtle">
+    <Card className="shadow-soft border-primary/20 bg-gradient-subtle animate-fade-in">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-primary">
           <Sparkles className="w-5 h-5" />
@@ -66,12 +68,7 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            <span className="ml-2 text-muted-foreground">Growing your memory garden...</span>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="space-y-4">
             <p className="text-destructive text-sm">{error}</p>
             <Button onClick={generateReflection} variant="outline" size="sm">
@@ -79,23 +76,47 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
             </Button>
           </div>
         ) : reflection ? (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in">
             <p className="text-lg leading-relaxed italic">{reflection}</p>
             <Button 
               onClick={generateReflection} 
               variant="ghost" 
               size="sm"
               className="text-primary hover:text-primary"
+              disabled={loading}
             >
-              <Sparkles className="w-4 h-4 mr-2" />
-              Generate New Reflection
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Generate New Reflection
+                </>
+              )}
             </Button>
           </div>
         ) : (
-          <Button onClick={generateReflection} variant="outline">
-            <Sparkles className="w-4 h-4 mr-2" />
-            Generate Reflection
-          </Button>
+          <div className="space-y-4">
+            {loading ? (
+              <div className="flex items-center py-4">
+                <Loader2 className="w-5 h-5 animate-spin text-primary mr-2" />
+                <span className="text-muted-foreground">Creating your reflection...</span>
+              </div>
+            ) : (
+              <>
+                <p className="text-lg leading-relaxed italic text-muted-foreground">
+                  Your memories are waiting to bloom into a beautiful reflection...
+                </p>
+                <Button onClick={generateReflection} variant="outline">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Generate Reflection
+                </Button>
+              </>
+            )}
+          </div>
         )}
       </CardContent>
     </Card>
