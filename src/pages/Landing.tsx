@@ -13,8 +13,8 @@ const Landing = () => {
     <div className="min-h-screen bg-gradient-warm">
       <FloatingNav />
       {/* Hero Section */}
-      <div className="container min-h-screen flex items-center justify-center mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-4xl mx-auto w-full">
+      <div className="container min-h-screen flex items-center justify-center mx-auto px-4 sm:px-6 lg:px-8 pt-0 sm:pt-0">
+        <div className="text-center max-w-4xl mx-auto w-full -mt-8 sm:mt-0">
           <div className="inline-flex items-center gap-2 mb-6 sm:mb-8 px-4 sm:px-5 py-2 bg-card/80 backdrop-blur-sm rounded-full shadow-soft border border-primary/10 animate-slide-up">
             <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-primary animate-float" />
             <span className="text-xs sm:text-sm font-medium text-muted-foreground">Preserve memories forever</span>
