@@ -221,7 +221,7 @@ const Notebook = () => {
                   Add Memory
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <form onSubmit={handleCreateMemory}>
                   <DialogHeader>
                     <DialogTitle>Capture a Memory</DialogTitle>
