@@ -298,14 +298,28 @@ const Notebook = () => {
                           <span className="ml-1 capitalize">{memory.sentiment || "neutral"}</span>
                         </Badge>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeleteMemoryId(memory.id)}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            const shareUrl = `${window.location.origin}/shared-memory/${memory.id}`;
+                            navigator.clipboard.writeText(shareUrl);
+                            toast({ title: "Memory link copied!", description: "Share this specific memory" });
+                          }}
+                          className="text-muted-foreground hover:text-primary"
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleteMemoryId(memory.id)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>

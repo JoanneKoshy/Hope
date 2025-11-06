@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Notebook from "./pages/Notebook";
 import SharedNotebook from "./pages/SharedNotebook";
+import SharedMemory from "./pages/SharedMemory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/notebook/:id" element={<Notebook />} />
           <Route path="/shared/:id" element={<SharedNotebook />} />
+          <Route path="/shared-memory/:id" element={<SharedMemory />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
