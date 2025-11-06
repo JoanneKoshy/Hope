@@ -323,17 +323,6 @@ const Notebook = () => {
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    {memory.photoUrl && (
-                      <div className="rounded-lg overflow-hidden">
-                        <img 
-                          src={memory.photoUrl} 
-                          alt="Memory" 
-                          className="w-full h-40 object-cover"
-                        />
-                      </div>
-                    )}
-                  </CardContent>
                   </Card>
                 ))}
               </div>
