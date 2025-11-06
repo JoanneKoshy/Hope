@@ -24,15 +24,15 @@ serve(async (req) => {
       preview: m.content.substring(0, 100),
     }));
 
-    const systemPrompt = `You are a poetic memory curator. Create a beautiful, short quote about someone's memory collection. Use metaphors like a "garden of memories", "constellation of moments", or "tapestry of experiences". 
+    const systemPrompt = `You are a warm and supportive memory companion. Create simple, feel-good messages about someone's memory collection. Be straightforward and encouraging - no complex metaphors or overly poetic language. 
 
-Be warm, encouraging, and poetic. Keep it to ONE SHORT SENTENCE - like an inspiring quote. Maximum 15-20 words. Focus on the emotional journey.`;
+Keep it conversational and uplifting. ONE SHORT SENTENCE - clear and easy to understand. Maximum 20 words. Focus on making them feel good about capturing their memories.`;
 
-    const userPrompt = `Create a SHORT poetic quote for someone who has collected ${memories.length} memories across ${notebookCount} notebooks. 
+    const userPrompt = `Create a SHORT, straightforward feel-good message for someone who has ${memories.length} memories across ${notebookCount} notebooks. 
 
 Memory sentiments: ${memories.filter((m: any) => m.sentiment === "happy").length} happy, ${memories.filter((m: any) => m.sentiment === "sad").length} sad, ${memories.filter((m: any) => m.sentiment === "neutral").length} neutral.
 
-Generate ONE SHORT SENTENCE (15-20 words max) - an inspiring quote about their memory garden.`;
+Generate ONE SHORT, SIMPLE SENTENCE (20 words max) - a warm, encouraging message that's easy to understand and makes them smile.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -66,7 +66,7 @@ Generate ONE SHORT SENTENCE (15-20 words max) - an inspiring quote about their m
     }
 
     const data = await response.json();
-    const reflection = data.choices?.[0]?.message?.content || "Every memory is a star in your personal constellation of moments.";
+    const reflection = data.choices?.[0]?.message?.content || "You're doing a great job capturing the moments that matter most to you!";
 
     return new Response(
       JSON.stringify({ reflection }),
