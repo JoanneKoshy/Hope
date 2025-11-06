@@ -2,8 +2,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { auth, storage } from "@/lib/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { supabase } from "@/integrations/supabase/client";
 import imageCompression from "browser-image-compression";
 import { Progress } from "@/components/ui/progress";
 
@@ -37,15 +36,14 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
     setUploadProgress(0);
 
     try {
-      const user = auth.currentUser;
-      console.log('Current user:', user?.uid);
+      // Get current user from Supabase
+      const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         throw new Error("Please sign in to upload photos");
       }
 
       // Compress image for faster upload
-      console.log('Starting image compression...');
       const options = {
         maxSizeMB: 2,
         maxWidthOrHeight: 1280,
@@ -55,71 +53,37 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
       };
 
       const compressedFile = await imageCompression(file, options);
-      console.log('Image compressed successfully');
 
       // Create a unique file name
       const fileExt = file.name.split('.').pop();
-      const fileName = `memory-photos/${user.uid}/${Date.now()}.${fileExt}`;
-      console.log('Uploading to:', fileName);
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
 
-      // Upload to Firebase Storage with progress tracking
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('memory-photos')
+        .upload(fileName, compressedFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadProgress(Math.round(progress));
-          console.log('Upload progress:', Math.round(progress) + '%');
-        },
-        (error) => {
-          console.error('Firebase Storage error:', error);
-          console.error('Error code:', error.code);
-          console.error('Error message:', error.message);
-          
-          let errorMessage = error.message;
-          if (error.code === 'storage/unauthorized') {
-            errorMessage = 'Storage access denied. Please configure Firebase Storage rules to allow uploads.';
-          }
-          
-          toast({
-            title: "Upload failed",
-            description: errorMessage,
-            variant: "destructive",
-          });
-          
-          setUploading(false);
-          setUploadProgress(0);
-        },
-        async () => {
-          try {
-            // Upload completed successfully
-            console.log('Upload complete, getting download URL...');
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            console.log('Download URL obtained:', downloadURL);
-            
-            onPhotoUploaded(downloadURL);
-            
-            toast({
-              title: "Photo uploaded!",
-              description: "Your photo has been added to the memory",
-            });
-            
-            setUploading(false);
-            setUploadProgress(0);
-          } catch (urlError: any) {
-            console.error('Error getting download URL:', urlError);
-            toast({
-              title: "Upload failed",
-              description: "Could not get photo URL: " + urlError.message,
-              variant: "destructive",
-            });
-            setUploading(false);
-            setUploadProgress(0);
-          }
-        }
-      );
+      if (error) {
+        throw error;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('memory-photos')
+        .getPublicUrl(fileName);
+
+      onPhotoUploaded(publicUrl);
+      
+      toast({
+        title: "Photo uploaded!",
+        description: "Your photo has been added to the memory",
+      });
+      
+      setUploading(false);
+      setUploadProgress(100);
     } catch (error: any) {
       console.error('Photo upload error:', error);
       toast({
