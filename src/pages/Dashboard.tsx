@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { BookOpen, Plus, LogOut, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { MemoryGarden } from "@/components/MemoryGarden";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Notebook {
   id: string;
@@ -30,9 +31,13 @@ const Dashboard = () => {
   const [initialLoading, setInitialLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    const user = auth.currentUser;
+    // Wait for auth to load
+    if (authLoading) return;
+    
+    // Redirect if not authenticated
     if (!user) {
       navigate("/auth");
       return;
@@ -66,14 +71,13 @@ const Dashboard = () => {
     });
 
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, user, authLoading]);
 
   const handleCreateNotebook = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const user = auth.currentUser;
       if (!user) return;
 
       await addDoc(collection(db, "notebooks"), {
@@ -103,7 +107,7 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  if (initialLoading) {
+  if (authLoading || initialLoading) {
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center">
         <div className="text-center">
