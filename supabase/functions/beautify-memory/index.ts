@@ -19,7 +19,7 @@ serve(async (req) => {
       throw new Error("GROQ_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are a subtle text editor. Make MINIMAL changes - only fix grammar and punctuation if needed. Keep the user's exact words, tone, and style. Do NOT rewrite or embellish. Just clean it up slightly.`;
+    const systemPrompt = `Keep the user's text EXACTLY as written. Only fix obvious typos or add a period at the end if missing. Do NOT change any words or style.`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
