@@ -191,29 +191,29 @@ const Notebook = () => {
   return (
     <div className="min-h-screen bg-gradient-warm">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Button variant="ghost" onClick={() => navigate("/dashboard")}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
+            <ArrowLeft className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Back</span>
           </Button>
-          <Button variant="outline" onClick={handleShare}>
-            <Share2 className="w-4 h-4 mr-2" />
-            Share
+          <Button variant="outline" size="sm" onClick={handleShare}>
+            <Share2 className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Share</span>
           </Button>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-2xl mb-4">
-              <Heart className="w-8 h-8 text-primary-foreground" />
+          <div className="mb-6 sm:mb-8 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-primary rounded-2xl mb-3 sm:mb-4">
+              <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-primary-foreground" />
             </div>
-            <h1 className="text-4xl font-bold mb-2 font-serif">{notebook.title}</h1>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto">{notebook.description}</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 font-serif px-4">{notebook.title}</h1>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4">{notebook.description}</p>
           </div>
 
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6 sm:mb-8">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="lg" className="shadow-soft">
@@ -221,11 +221,11 @@ const Notebook = () => {
                   Add Memory
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
                 <form onSubmit={handleCreateMemory}>
                   <DialogHeader>
-                    <DialogTitle>Capture a Memory</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-lg sm:text-xl">Capture a Memory</DialogTitle>
+                    <DialogDescription className="text-sm">
                       Write or speak about a precious moment. Be as detailed as you'd like.
                     </DialogDescription>
                   </DialogHeader>
@@ -272,34 +272,34 @@ const Notebook = () => {
           </div>
 
           <Tabs defaultValue="memories" className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto mb-8 grid-cols-2">
-              <TabsTrigger value="memories">
-                <Heart className="w-4 h-4 mr-2" />
-                Memories
+            <TabsList className="grid w-full max-w-md mx-auto mb-6 sm:mb-8 grid-cols-2">
+              <TabsTrigger value="memories" className="text-xs sm:text-sm">
+                <Heart className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Memories</span>
               </TabsTrigger>
-              <TabsTrigger value="timeline">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Timeline
+              <TabsTrigger value="timeline" className="text-xs sm:text-sm">
+                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Timeline</span>
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="memories">
               {memories.length === 0 ? (
-            <Card className="text-center py-16 shadow-soft">
+            <Card className="text-center py-12 sm:py-16 shadow-soft">
               <CardContent>
-                <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-semibold mb-2">No memories yet</h3>
-                <p className="text-muted-foreground mb-6">
+                <Heart className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">No memories yet</h3>
+                <p className="text-sm sm:text-base text-muted-foreground mb-6 px-4">
                   Start capturing precious moments in this notebook
                 </p>
-                <Button onClick={() => setIsDialogOpen(true)}>
+                <Button onClick={() => setIsDialogOpen(true)} className="w-full sm:w-auto">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Your First Memory
                 </Button>
               </CardContent>
               </Card>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {memories.map((memory) => (
                 <Card 
                   key={memory.id} 
@@ -354,14 +354,14 @@ const Notebook = () => {
       </AlertDialog>
 
       <Dialog open={!!selectedMemory} onOpenChange={(open) => !open && setSelectedMemory(null)}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto mx-4">
           {selectedMemory && (
             <>
               <DialogHeader>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <DialogTitle className="text-2xl font-serif mb-2">{selectedMemory.title}</DialogTitle>
-                    <p className="text-sm text-muted-foreground">
+                <div className="flex items-start justify-between gap-2 sm:gap-4">
+                  <div className="flex-1 min-w-0">
+                    <DialogTitle className="text-xl sm:text-2xl font-serif mb-2 break-words">{selectedMemory.title}</DialogTitle>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {selectedMemory.createdAt?.toDate().toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",

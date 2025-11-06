@@ -51,23 +51,23 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4 sm:p-6">
       <Card className="w-full max-w-md shadow-medium">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center">
-              <Heart className="w-8 h-8 text-primary-foreground" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-primary rounded-2xl flex items-center justify-center">
+              <Heart className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-3xl">Hope</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl sm:text-3xl">Hope</CardTitle>
+          <CardDescription className="text-sm sm:text-base">
             {isLogin ? "Welcome back" : "Start preserving memories"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAuth} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm sm:text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -75,10 +75,11 @@ const Auth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="text-sm sm:text-base"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-sm sm:text-base">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -86,9 +87,10 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="text-sm sm:text-base"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full text-sm sm:text-base" disabled={loading}>
               {loading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
             </Button>
           </form>
@@ -97,7 +99,7 @@ const Auth = () => {
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
             </button>

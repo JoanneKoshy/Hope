@@ -123,16 +123,16 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
           <img 
             src={photoUrl} 
             alt="Memory photo" 
-            className="w-full h-48 object-cover"
+            className="w-full h-40 sm:h-48 object-cover"
           />
           <Button
             type="button"
             variant="destructive"
             size="icon"
-            className="absolute top-2 right-2"
+            className="absolute top-2 right-2 h-8 w-8 sm:h-10 sm:w-10"
             onClick={handleRemovePhoto}
           >
-            <X className="w-4 h-4" />
+            <X className="w-3 h-3 sm:w-4 sm:h-4" />
           </Button>
         </div>
       ) : (

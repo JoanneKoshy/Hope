@@ -13,14 +13,14 @@ const Landing = () => {
     <div className="min-h-screen bg-gradient-warm">
       <FloatingNav />
       {/* Hero Section */}
-      <div className="container min-h-screen flex items-center justify-center mx-auto px-4">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 mb-8 px-5 py-2 bg-card/80 backdrop-blur-sm rounded-full shadow-soft border border-primary/10 animate-slide-up">
-            <Heart className="w-4 h-4 text-primary animate-float" />
-            <span className="text-sm font-medium text-muted-foreground">Preserve memories forever</span>
+      <div className="container min-h-screen flex items-center justify-center mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-4xl mx-auto w-full">
+          <div className="inline-flex items-center gap-2 mb-6 sm:mb-8 px-4 sm:px-5 py-2 bg-card/80 backdrop-blur-sm rounded-full shadow-soft border border-primary/10 animate-slide-up">
+            <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-primary animate-float" />
+            <span className="text-xs sm:text-sm font-medium text-muted-foreground">Preserve memories forever</span>
           </div>
           
-          <h1 className="text-9xl md:text-[10rem] lg:text-[14rem] font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-none tracking-tighter animate-scale-in" style={{ 
+          <h1 className="text-6xl sm:text-8xl md:text-[10rem] lg:text-[14rem] font-bold mb-4 sm:mb-6 bg-gradient-primary bg-clip-text text-transparent leading-none tracking-tighter animate-scale-in" style={{ 
             backgroundSize: '200% auto',
             animation: 'scale-in 0.6s ease-out, shimmer 3s linear infinite'
           }}>
@@ -29,18 +29,18 @@ const Landing = () => {
           
           <Typewriter 
             text="Where life stories live forever" 
-            className="text-2xl md:text-3xl text-foreground/80 mb-10 font-serif italic animate-fade-in" 
+            className="text-xl sm:text-2xl md:text-3xl text-foreground/80 mb-8 sm:mb-10 font-serif italic animate-fade-in px-4" 
           />
           
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed animate-slide-up">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed animate-slide-up px-4">
             An AI-powered memory keeper that gently captures the precious stories of your loved ones. 
             Record, transcribe, and transform life experiences into beautiful digital notebooks.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in px-4">
             <Button 
               size="lg" 
-              className="text-lg px-10 py-6 shadow-medium hover:shadow-soft hover:scale-105 transition-all duration-300"
+              className="text-base sm:text-lg px-8 sm:px-10 py-5 sm:py-6 shadow-medium hover:shadow-soft hover:scale-105 transition-all duration-300 w-full sm:w-auto"
               onClick={() => navigate("/auth")}
             >
               Start Preserving Memories
@@ -48,7 +48,7 @@ const Landing = () => {
             <Button 
               size="lg" 
               variant="outline"
-              className="text-lg px-10 py-6 hover:scale-105 transition-all duration-300"
+              className="text-base sm:text-lg px-8 sm:px-10 py-5 sm:py-6 hover:scale-105 transition-all duration-300 w-full sm:w-auto"
               onClick={() => navigate("/auth")}
             >
               Learn More
@@ -58,8 +58,8 @@ const Landing = () => {
       </div>
 
       {/* Features Section */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
           <AnimateOnScroll>
             <div className="bg-card p-8 rounded-2xl shadow-soft hover:shadow-medium transition-all h-full">
               <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center mb-4">
@@ -99,16 +99,16 @@ const Landing = () => {
       </div>
 
       {/* How It Works */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div className="max-w-4xl mx-auto">
           <AnimateOnScroll>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">Key Features</h2>
-            <p className="text-lg text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-center">Key Features</h2>
+            <p className="text-base sm:text-lg text-muted-foreground text-center mb-12 sm:mb-16 max-w-2xl mx-auto px-4">
               Everything you need to preserve and share precious memories
             </p>
           </AnimateOnScroll>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             <AnimateOnScroll>
               <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-medium transition-all border border-primary/5">
                 <div className="flex gap-4 items-start">
@@ -169,19 +169,19 @@ const Landing = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <AnimateOnScroll>
-          <div className="max-w-2xl mx-auto text-center bg-card p-12 rounded-3xl shadow-medium">
-            <Heart className="w-16 h-16 text-primary mx-auto mb-6 animate-float" />
-            <h2 className="text-3xl font-bold mb-4">
+          <div className="max-w-2xl mx-auto text-center bg-card p-8 sm:p-12 rounded-3xl shadow-medium">
+            <Heart className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-4 sm:mb-6 animate-float" />
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 px-4">
               Don't let precious stories fade away
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
               Start preserving the memories that matter most. Your loved ones will thank you.
             </p>
             <Button 
               size="lg" 
-              className="text-lg px-8"
+              className="text-base sm:text-lg px-6 sm:px-8 w-full sm:w-auto"
               onClick={() => navigate("/auth")}
             >
               Begin Your Journey

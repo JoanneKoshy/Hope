@@ -124,32 +124,32 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-warm animate-fade-in">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Heart className="w-6 h-6 text-primary" />
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">Hope</h1>
+            <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">Hope</h1>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
+          <Button variant="outline" size="sm" onClick={handleLogout} className="text-xs sm:text-sm">
+            <LogOut className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Sign Out</span>
           </Button>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="max-w-6xl mx-auto">
           <div className="animate-slide-up">
             <MemoryGarden memories={allMemories} notebookCount={notebooks.length} />
           </div>
           
-          <div className="flex justify-between items-center mb-8 mt-8 animate-fade-in">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8 mt-6 sm:mt-8 animate-fade-in">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Your Memory Notebooks</h2>
-              <p className="text-muted-foreground">Organize life stories into beautiful collections</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2">Your Memory Notebooks</h2>
+              <p className="text-sm sm:text-base text-muted-foreground">Organize life stories into beautiful collections</p>
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="lg" className="shadow-soft">
+                <Button size="lg" className="shadow-soft w-full sm:w-auto">
                   <Plus className="w-4 h-4 mr-2" />
                   New Notebook
                 </Button>
@@ -195,21 +195,21 @@ const Dashboard = () => {
           </div>
 
           {notebooks.length === 0 ? (
-            <Card className="text-center py-16 shadow-soft">
+            <Card className="text-center py-12 sm:py-16 shadow-soft">
               <CardContent>
-                <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-semibold mb-2">No notebooks yet</h3>
-                <p className="text-muted-foreground mb-6">
+                <BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">No notebooks yet</h3>
+                <p className="text-sm sm:text-base text-muted-foreground mb-6 px-4">
                   Create your first notebook to start preserving precious memories
                 </p>
-                <Button onClick={() => setIsDialogOpen(true)}>
+                <Button onClick={() => setIsDialogOpen(true)} className="w-full sm:w-auto">
                   <Plus className="w-4 h-4 mr-2" />
                   Create Your First Notebook
                 </Button>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {notebooks.map((notebook) => (
                 <Card
                   key={notebook.id}
