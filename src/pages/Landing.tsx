@@ -57,7 +57,7 @@ const Landing = () => {
       </div>
 
       {/* Features Section */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-16 lg:py-20">
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
           <AnimateOnScroll>
             <div className="bg-card p-8 rounded-2xl shadow-soft hover:shadow-medium transition-all h-full">
