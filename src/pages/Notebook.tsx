@@ -7,11 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Smile, Frown, Meh, Share2, Trash2, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { VoiceRecorder } from "@/components/VoiceRecorder";
 import { PhotoUpload } from "@/components/PhotoUpload";
+import { SentimentTimeline } from "@/components/SentimentTimeline";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Memory {
   id: string;
@@ -235,7 +237,20 @@ const Notebook = () => {
             </Dialog>
           </div>
 
-          {memories.length === 0 ? (
+          <Tabs defaultValue="memories" className="w-full">
+            <TabsList className="grid w-full max-w-md mx-auto mb-8 grid-cols-2">
+              <TabsTrigger value="memories">
+                <Heart className="w-4 h-4 mr-2" />
+                Memories
+              </TabsTrigger>
+              <TabsTrigger value="timeline">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Timeline
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="memories">
+              {memories.length === 0 ? (
             <Card className="text-center py-16 shadow-soft">
               <CardContent>
                 <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
@@ -248,9 +263,9 @@ const Notebook = () => {
                   Add Your First Memory
                 </Button>
               </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-6">
+              </Card>
+              ) : (
+                <div className="space-y-6">
               {memories.map((memory) => (
                 <Card key={memory.id} className="shadow-soft hover:shadow-medium transition-all animate-fade-in">
                   <CardHeader>
@@ -292,10 +307,16 @@ const Notebook = () => {
                       {memory.content}
                     </p>
                   </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
+                  </Card>
+                ))}
+              </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="timeline">
+              <SentimentTimeline memories={memories} />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
