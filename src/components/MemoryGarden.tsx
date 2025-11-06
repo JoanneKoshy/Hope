@@ -72,9 +72,14 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg leading-relaxed">
-            Start capturing your precious moments, and watch your memory garden grow with beautiful reflections! 🌱
-          </p>
+          <div className="space-y-6 text-center">
+            <blockquote className="text-2xl md:text-3xl leading-relaxed font-serif py-8 px-6 border-l-4 border-primary/50 bg-muted/30 rounded-r-lg" style={{ fontFamily: 'cursive' }}>
+              "Every journey begins with a single step. Start capturing your precious moments today! 🌱"
+            </blockquote>
+            <p className="text-muted-foreground">
+              Add memories to your notebook and watch beautiful reflections bloom in your garden
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
