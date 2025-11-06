@@ -13,28 +13,34 @@ const Landing = () => {
     <div className="min-h-screen bg-gradient-warm">
       <FloatingNav />
       {/* Hero Section */}
-      <div className="container h-screen flex flex-col gap-5 justify-center mx-auto px-4 pt-20 pb-32">
-        <div className="text-center max-w-4xl  mx-auto animate-fade-in">
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-card rounded-full shadow-soft">
-            <Heart className="w-4 h-4 text-primary" />
-            <span className="text-sm text-muted-foreground">Preserve memories forever</span>
+      <div className="container min-h-screen flex items-center justify-center mx-auto px-4">
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 mb-8 px-5 py-2 bg-card/80 backdrop-blur-sm rounded-full shadow-soft border border-primary/10 animate-slide-up">
+            <Heart className="w-4 h-4 text-primary animate-float" />
+            <span className="text-sm font-medium text-muted-foreground">Preserve memories forever</span>
           </div>
           
-          <h1 className="text-[7rem] md:text-[12rem] font-bold mb-10 bg-gradient-primary animate-float bg-clip-text text-transparent">
+          <h1 className="text-8xl md:text-9xl lg:text-[12rem] font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-none tracking-tighter animate-scale-in" style={{ 
+            backgroundSize: '200% auto',
+            animation: 'scale-in 0.6s ease-out, shimmer 3s linear infinite'
+          }}>
             Hope
           </h1>
-         <div className="px-8"> 
-          <Typewriter text="Where life stories live forever" className="text-2xl md:text-3xl text-foreground/80 mb-8 font-serif italic" />
           
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
+          <Typewriter 
+            text="Where life stories live forever" 
+            className="text-2xl md:text-3xl text-foreground/80 mb-10 font-serif italic animate-fade-in" 
+          />
+          
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed animate-slide-up">
             An AI-powered memory keeper that gently captures the precious stories of your loved ones. 
-            Record, transcribe, and transform life experiences into beautiful digital notebooks that can be treasured for generations.
+            Record, transcribe, and transform life experiences into beautiful digital notebooks.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
             <Button 
               size="lg" 
-              className="text-lg px-8 shadow-medium hover:shadow-soft transition-all"
+              className="text-lg px-10 py-6 shadow-medium hover:shadow-soft hover:scale-105 transition-all duration-300"
               onClick={() => navigate("/auth")}
             >
               Start Preserving Memories
@@ -42,13 +48,12 @@ const Landing = () => {
             <Button 
               size="lg" 
               variant="outline"
-              className="text-lg px-8"
+              className="text-lg px-10 py-6 hover:scale-105 transition-all duration-300"
               onClick={() => navigate("/auth")}
             >
               Learn More
             </Button>
           </div>
-		  </div>
         </div>
       </div>
 
@@ -95,44 +100,67 @@ const Landing = () => {
 
       {/* How It Works */}
       <div className="container mx-auto px-4 py-20">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto">
           <AnimateOnScroll>
-            <h2 className="text-4xl font-bold mb-12">How Hope Works</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">Key Features</h2>
+            <p className="text-lg text-muted-foreground text-center mb-16 max-w-2xl mx-auto">
+              Everything you need to preserve and share precious memories
+            </p>
           </AnimateOnScroll>
           
-          <div className="space-y-8 text-left">
+          <div className="grid md:grid-cols-2 gap-6">
             <AnimateOnScroll>
-              <div className="flex gap-6 items-start">
-                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center flex-shrink-0 text-primary-foreground font-bold">
-                  1
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Create a Notebook</h3>
-                  <p className="text-muted-foreground">Start with a theme like "Childhood Memories" or "Working Years"</p>
+              <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-medium transition-all border border-primary/5">
+                <div className="flex gap-4 items-start">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="w-6 h-6 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold mb-2">Organized Notebooks</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">Create themed notebooks for different life chapters. Keep memories organized and easy to find.</p>
+                  </div>
                 </div>
               </div>
             </AnimateOnScroll>
 
             <AnimateOnScroll delay={0.1}>
-              <div className="flex gap-6 items-start">
-                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center flex-shrink-0 text-primary-foreground font-bold">
-                  2
+              <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-medium transition-all border border-primary/5">
+                <div className="flex gap-4 items-start">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-6 h-6 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold mb-2">Voice Recording & AI Transcription</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">Record memories by speaking naturally. Our AI transcribes and formats your stories beautifully.</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Record Stories</h3>
-                  <p className="text-muted-foreground">Type or speak memories naturally. AI handles the rest</p>
+              </div>
+            </AnimateOnScroll>
+
+            <AnimateOnScroll delay={0.15}>
+              <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-medium transition-all border border-primary/5">
+                <div className="flex gap-4 items-start">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center flex-shrink-0">
+                    <Heart className="w-6 h-6 text-secondary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold mb-2">Sentiment Timeline</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">Visualize emotional journeys with automatic sentiment detection and beautiful timeline views.</p>
+                  </div>
                 </div>
               </div>
             </AnimateOnScroll>
 
             <AnimateOnScroll delay={0.2}>
-              <div className="flex gap-6 items-start">
-                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center flex-shrink-0 text-primary-foreground font-bold">
-                  3
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Treasure Forever</h3>
-                  <p className="text-muted-foreground">Share with family, revisit memories, and keep stories alive for generations</p>
+              <div className="bg-card p-6 rounded-2xl shadow-soft hover:shadow-medium transition-all border border-primary/5">
+                <div className="flex gap-4 items-start">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-secondary flex items-center justify-center flex-shrink-0">
+                    <Share2 className="w-6 h-6 text-secondary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold mb-2">Secure Sharing</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">Share entire notebooks or individual memories with family through secure, private links.</p>
+                  </div>
                 </div>
               </div>
             </AnimateOnScroll>
