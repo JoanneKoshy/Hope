@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "@/lib/firebase";
-import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { BookOpen, Plus, LogOut, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { MemoryGarden } from "@/components/MemoryGarden";
 
 interface Notebook {
   id: string;
@@ -21,6 +22,7 @@ interface Notebook {
 
 const Dashboard = () => {
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
+  const [allMemories, setAllMemories] = useState<any[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -40,12 +42,23 @@ const Dashboard = () => {
       where("userId", "==", user.uid)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const notebooksData: Notebook[] = [];
       snapshot.forEach((doc) => {
         notebooksData.push({ id: doc.id, ...doc.data() } as Notebook);
       });
       setNotebooks(notebooksData.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds));
+
+      // Fetch all memories from all notebooks
+      const allMemoriesData: any[] = [];
+      for (const notebook of notebooksData) {
+        const memoriesQuery = query(collection(db, "memories"), where("notebookId", "==", notebook.id));
+        const memoriesSnapshot = await getDocs(memoriesQuery);
+        memoriesSnapshot.forEach((doc) => {
+          allMemoriesData.push({ id: doc.id, ...doc.data() });
+        });
+      }
+      setAllMemories(allMemoriesData);
     });
 
     return () => unsubscribe();
@@ -103,7 +116,9 @@ const Dashboard = () => {
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
+          <MemoryGarden memories={allMemories} notebookCount={notebooks.length} />
+          
+          <div className="flex justify-between items-center mb-8 mt-8">
             <div>
               <h2 className="text-4xl font-bold mb-2">Your Memory Notebooks</h2>
               <p className="text-muted-foreground">Organize life stories into beautiful collections</p>
