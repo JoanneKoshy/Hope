@@ -56,11 +56,25 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
   }, [memories.length]);
 
   if (memories.length === 0) {
-    return null;
+    return (
+      <Card className="shadow-soft border-primary/20 bg-gradient-subtle animate-fade-in mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-primary">
+            <Sparkles className="w-5 h-5" />
+            Your Memory Garden
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg leading-relaxed">
+            Start capturing your precious moments, and watch your memory garden grow with beautiful reflections! 🌱
+          </p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
-    <Card className="shadow-soft border-primary/20 bg-gradient-subtle animate-fade-in">
+    <Card className="shadow-soft border-primary/20 bg-gradient-subtle animate-fade-in mb-8">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-primary">
           <Sparkles className="w-5 h-5" />
