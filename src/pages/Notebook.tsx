@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Memory {
   id: string;
+  title: string;
   content: string;
   notebookId: string;
   userId: string;
@@ -38,10 +39,12 @@ const Notebook = () => {
   const [notebook, setNotebook] = useState<NotebookData | null>(null);
   const [memories, setMemories] = useState<Memory[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [deleteMemoryId, setDeleteMemoryId] = useState<string | null>(null);
+  const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -114,6 +117,7 @@ const Notebook = () => {
       const sentiment = detectSentiment(beautifiedContent);
 
       await addDoc(collection(db, "memories"), {
+        title,
         content: beautifiedContent,
         notebookId: id,
         userId: user.uid,
@@ -123,6 +127,7 @@ const Notebook = () => {
       });
 
       toast({ title: "Memory saved!" });
+      setTitle("");
       setContent("");
       setPhotoUrl("");
       setIsDialogOpen(false);
@@ -225,14 +230,28 @@ const Notebook = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
-                    <Textarea
-                      placeholder="Tell your story... What happened? Who was there? How did it make you feel?"
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      rows={8}
-                      className="resize-none"
-                      required
-                    />
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Title</label>
+                      <input
+                        type="text"
+                        placeholder="Give your memory a title..."
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Memory</label>
+                      <Textarea
+                        placeholder="Tell your story... What happened? Who was there? How did it make you feel?"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        rows={8}
+                        className="resize-none"
+                        required
+                      />
+                    </div>
                     <PhotoUpload
                       photoUrl={photoUrl}
                       onPhotoUploaded={setPhotoUrl}
@@ -280,83 +299,40 @@ const Notebook = () => {
               </CardContent>
               </Card>
               ) : (
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {memories.map((memory) => (
-                <Card key={memory.id} className="shadow-soft hover:shadow-medium transition-all animate-fade-in">
+                <Card 
+                  key={memory.id} 
+                  className="shadow-soft hover:shadow-medium transition-all animate-fade-in cursor-pointer"
+                  onClick={() => setSelectedMemory(memory)}
+                >
                   <CardHeader>
                     <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1 flex justify-between items-start">
-                        <CardTitle className="text-sm text-muted-foreground font-normal">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg font-serif mb-2">{memory.title}</CardTitle>
+                        <p className="text-sm text-muted-foreground">
                           {memory.createdAt?.toDate().toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
                           })}
-                        </CardTitle>
-                        <Badge variant="secondary" className={getSentimentColor(memory.sentiment)}>
-                          {getSentimentIcon(memory.sentiment)}
-                          <span className="ml-1 capitalize">{memory.sentiment || "neutral"}</span>
-                        </Badge>
+                        </p>
                       </div>
-                      <div className="flex gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={async () => {
-                            try {
-                              const user = auth.currentUser;
-                              if (!user) return;
-
-                              const { data, error } = await supabase
-                                .from('shared_memories')
-                                .insert({
-                                  memory_id: memory.id,
-                                  shared_by_user_id: user.uid
-                                })
-                                .select()
-                                .single();
-
-                              if (error) throw error;
-
-                              const shareUrl = `${window.location.origin}/shared-memory/${data.id}`;
-                              navigator.clipboard.writeText(shareUrl);
-                              toast({ title: "Memory link copied!", description: "Share this specific memory" });
-                            } catch (error: any) {
-                              toast({
-                                title: "Error",
-                                description: error.message,
-                                variant: "destructive",
-                              });
-                            }
-                          }}
-                          className="text-muted-foreground hover:text-primary"
-                        >
-                          <Share2 className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setDeleteMemoryId(memory.id)}
-                          className="text-muted-foreground hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      <Badge variant="secondary" className={getSentimentColor(memory.sentiment)}>
+                        {getSentimentIcon(memory.sentiment)}
+                      </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
                     {memory.photoUrl && (
-                      <div className="mb-4 rounded-lg overflow-hidden">
+                      <div className="rounded-lg overflow-hidden">
                         <img 
                           src={memory.photoUrl} 
                           alt="Memory" 
-                          className="w-full h-64 object-cover"
+                          className="w-full h-40 object-cover"
                         />
                       </div>
                     )}
-                    <p className="text-lg leading-relaxed font-serif whitespace-pre-wrap">
-                      {memory.content}
-                    </p>
                   </CardContent>
                   </Card>
                 ))}
@@ -387,6 +363,96 @@ const Notebook = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={!!selectedMemory} onOpenChange={(open) => !open && setSelectedMemory(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          {selectedMemory && (
+            <>
+              <DialogHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <DialogTitle className="text-2xl font-serif mb-2">{selectedMemory.title}</DialogTitle>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedMemory.createdAt?.toDate().toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Badge variant="secondary" className={getSentimentColor(selectedMemory.sentiment)}>
+                      {getSentimentIcon(selectedMemory.sentiment)}
+                      <span className="ml-1 capitalize">{selectedMemory.sentiment || "neutral"}</span>
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          const user = auth.currentUser;
+                          if (!user) return;
+
+                          const { data, error } = await supabase
+                            .from('shared_memories')
+                            .insert({
+                              memory_id: selectedMemory.id,
+                              shared_by_user_id: user.uid
+                            })
+                            .select()
+                            .single();
+
+                          if (error) throw error;
+
+                          const shareUrl = `${window.location.origin}/shared-memory/${data.id}`;
+                          navigator.clipboard.writeText(shareUrl);
+                          toast({ title: "Memory link copied!", description: "Share this specific memory" });
+                        } catch (error: any) {
+                          toast({
+                            title: "Error",
+                            description: error.message,
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                      className="text-muted-foreground hover:text-primary"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteMemoryId(selectedMemory.id);
+                        setSelectedMemory(null);
+                      }}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </DialogHeader>
+              <div className="space-y-4">
+                {selectedMemory.photoUrl && (
+                  <div className="rounded-lg overflow-hidden">
+                    <img 
+                      src={selectedMemory.photoUrl} 
+                      alt="Memory" 
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                )}
+                <p className="text-lg leading-relaxed font-serif whitespace-pre-wrap">
+                  {selectedMemory.content}
+                </p>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
