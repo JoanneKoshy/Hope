@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
 import { supabase } from "@/integrations/supabase/client";
 import imageCompression from "browser-image-compression";
 import { Progress } from "@/components/ui/progress";
@@ -36,8 +37,8 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
     setUploadProgress(0);
 
     try {
-      // Get current user from Supabase
-      const { data: { user } } = await supabase.auth.getUser();
+      // Get current user from Firebase
+      const user = auth.currentUser;
       
       if (!user) {
         throw new Error("Please sign in to upload photos");
@@ -56,9 +57,9 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
 
       // Create a unique file name
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const fileName = `${user.uid}/${Date.now()}.${fileExt}`;
 
-      // Upload to Supabase Storage
+      // Upload to Lovable Cloud Storage
       const { data, error } = await supabase.storage
         .from('memory-photos')
         .upload(fileName, compressedFile, {
