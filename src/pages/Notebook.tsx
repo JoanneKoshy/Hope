@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -96,10 +97,24 @@ const Notebook = () => {
       const user = auth.currentUser;
       if (!user) return;
 
-      const sentiment = detectSentiment(content);
+      // Beautify content using Groq API
+      const { data: beautifyData, error: beautifyError } = await supabase.functions.invoke('beautify-memory', {
+        body: { content }
+      });
+
+      if (beautifyError) {
+        console.error("Error beautifying memory:", beautifyError);
+        toast({
+          title: "Note",
+          description: "Using original text",
+        });
+      }
+
+      const beautifiedContent = beautifyData?.beautifiedContent || content;
+      const sentiment = detectSentiment(beautifiedContent);
 
       await addDoc(collection(db, "memories"), {
-        content,
+        content: beautifiedContent,
         notebookId: id,
         userId: user.uid,
         sentiment,
