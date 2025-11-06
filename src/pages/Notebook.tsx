@@ -302,10 +302,32 @@ const Notebook = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => {
-                            const shareUrl = `${window.location.origin}/shared-memory/${memory.id}`;
-                            navigator.clipboard.writeText(shareUrl);
-                            toast({ title: "Memory link copied!", description: "Share this specific memory" });
+                          onClick={async () => {
+                            try {
+                              const user = auth.currentUser;
+                              if (!user) return;
+
+                              const { data, error } = await supabase
+                                .from('shared_memories')
+                                .insert({
+                                  memory_id: memory.id,
+                                  shared_by_user_id: user.uid
+                                })
+                                .select()
+                                .single();
+
+                              if (error) throw error;
+
+                              const shareUrl = `${window.location.origin}/shared-memory/${data.id}`;
+                              navigator.clipboard.writeText(shareUrl);
+                              toast({ title: "Memory link copied!", description: "Share this specific memory" });
+                            } catch (error: any) {
+                              toast({
+                                title: "Error",
+                                description: error.message,
+                                variant: "destructive",
+                              });
+                            }
                           }}
                           className="text-muted-foreground hover:text-primary"
                         >

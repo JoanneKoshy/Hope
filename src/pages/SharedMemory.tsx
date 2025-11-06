@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { db } from "@/lib/firebase";
+import { useParams, useNavigate } from "react-router-dom";
+import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Smile, Frown, Meh } from "lucide-react";
@@ -18,13 +19,34 @@ interface Memory {
 
 const SharedMemory = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [memory, setMemory] = useState<Memory | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
     const fetchMemory = async () => {
       try {
-        const memoryDoc = await getDoc(doc(db, "memories", id!));
+        // First, get the shared memory entry to find the actual memory ID
+        const { data: sharedMemoryData, error: sharedError } = await supabase
+          .from('shared_memories')
+          .select('memory_id')
+          .eq('id', id!)
+          .maybeSingle();
+
+        if (sharedError) throw sharedError;
+        if (!sharedMemoryData) {
+          setLoading(false);
+          return;
+        }
+
+        // Then fetch the actual memory from Firebase
+        const memoryDoc = await getDoc(doc(db, "memories", sharedMemoryData.memory_id));
         if (memoryDoc.exists()) {
           setMemory({ id: memoryDoc.id, ...memoryDoc.data() } as Memory);
         }
@@ -36,7 +58,7 @@ const SharedMemory = () => {
     };
 
     fetchMemory();
-  }, [id]);
+  }, [id, navigate]);
 
   const getSentimentIcon = (sentiment?: string) => {
     switch (sentiment) {
