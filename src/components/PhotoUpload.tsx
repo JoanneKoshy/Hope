@@ -2,8 +2,8 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { auth } from "@/lib/firebase";
+import { auth, storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 interface PhotoUploadProps {
   onPhotoUploaded: (url: string) => void;
@@ -50,24 +50,16 @@ export const PhotoUpload = ({ onPhotoUploaded, photoUrl, onPhotoRemoved }: Photo
 
       // Create a unique file name
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.uid}/${Date.now()}.${fileExt}`;
+      const fileName = `memory-photos/${user.uid}/${Date.now()}.${fileExt}`;
 
-      // Upload to Supabase Storage
-      const { data, error } = await supabase.storage
-        .from('memory-photos')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
+      // Upload to Firebase Storage
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, file);
 
-      if (error) throw error;
+      // Get download URL
+      const downloadURL = await getDownloadURL(storageRef);
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('memory-photos')
-        .getPublicUrl(data.path);
-
-      onPhotoUploaded(publicUrl);
+      onPhotoUploaded(downloadURL);
       
       toast({
         title: "Photo uploaded!",
