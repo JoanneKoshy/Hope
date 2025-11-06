@@ -57,10 +57,10 @@ serve(async (req) => {
     const formData = new FormData()
     const blob = new Blob([binaryAudio], { type: 'audio/webm' })
     formData.append('file', blob, 'audio.webm')
-    formData.append('model', 'whisper-1')
+    formData.append('model', 'whisper-large-v3')
 
-    // Send to OpenAI
-    const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+    // Send to Groq
+    const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
@@ -70,8 +70,8 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('OpenAI API error:', errorText)
-      throw new Error(`OpenAI API error: ${errorText}`)
+      console.error('Groq API error:', errorText)
+      throw new Error(`Groq API error: ${errorText}`)
     }
 
     const result = await response.json()
