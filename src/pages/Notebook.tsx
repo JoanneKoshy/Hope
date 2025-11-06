@@ -198,14 +198,14 @@ const Notebook = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-12 text-center">
+          <div className="mb-8 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-2xl mb-4">
               <Heart className="w-8 h-8 text-primary-foreground" />
             </div>
-            <h1 className="text-5xl font-bold mb-3 font-serif">{notebook.title}</h1>
-            <p className="text-lg text-muted-foreground">{notebook.description}</p>
+            <h1 className="text-4xl font-bold mb-2 font-serif">{notebook.title}</h1>
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto">{notebook.description}</p>
           </div>
 
           <div className="flex justify-center mb-8">
