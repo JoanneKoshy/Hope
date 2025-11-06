@@ -65,19 +65,19 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
   if (memories.length === 0) {
     return (
       <Card className="shadow-soft border-primary/20 bg-gradient-subtle animate-fade-in mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-primary">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-primary text-lg">
             <Sparkles className="w-5 h-5" />
             Your Memory Garden
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-6 text-center">
-            <blockquote className="text-lg leading-relaxed font-cormorant italic py-6 px-6 text-foreground/80">
+        <CardContent className="pb-6">
+          <div className="text-center space-y-4">
+            <blockquote className="text-xl md:text-2xl leading-relaxed font-cormorant italic py-4 px-4 text-foreground">
               "Every journey begins with a single step. Start capturing your precious moments today."
             </blockquote>
             <p className="text-sm text-muted-foreground">
-              Add memories to your notebook and watch beautiful reflections bloom in your garden 🌱
+              Add memories to your notebook and watch beautiful reflections bloom 🌱
             </p>
           </div>
         </CardContent>
@@ -87,37 +87,37 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
 
   return (
     <Card className="shadow-soft border-primary/20 bg-gradient-subtle animate-fade-in mb-8">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-primary">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-primary text-lg">
           <Sparkles className="w-5 h-5" />
           Your Memory Garden
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pb-6">
         {error ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <p className="text-destructive text-sm">{error}</p>
             <Button onClick={generateReflection} variant="outline" size="sm">
               Try Again
             </Button>
           </div>
         ) : reflection ? (
-          <div className="space-y-6 animate-fade-in">
-            <blockquote className="text-lg leading-relaxed font-cormorant italic text-center py-6 px-6 text-foreground/80">
+          <div className="space-y-5 animate-fade-in">
+            <blockquote className="text-xl md:text-2xl leading-relaxed font-cormorant italic text-center py-4 px-4 text-foreground">
               "{reflection}"
             </blockquote>
             <div className="flex justify-center">
               <Button 
                 onClick={generateReflection} 
                 variant="outline" 
-                size="lg"
-                className="text-primary hover:text-primary shadow-sm"
+                size="default"
+                className="text-primary hover:text-primary"
                 disabled={loading}
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Creating your reflection...
+                    Creating...
                   </>
                 ) : (
                   <>
@@ -129,18 +129,18 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {loading ? (
-              <div className="flex items-center justify-center py-8">
+              <div className="flex items-center justify-center py-6">
                 <Loader2 className="w-5 h-5 animate-spin text-primary mr-3" />
-                <span className="text-muted-foreground text-lg">Creating your reflection...</span>
+                <span className="text-muted-foreground">Creating your reflection...</span>
               </div>
             ) : (
-              <div className="text-center space-y-6">
-                <p className="text-lg leading-relaxed font-cormorant italic text-muted-foreground py-4">
+              <div className="text-center space-y-4">
+                <p className="text-xl md:text-2xl leading-relaxed font-cormorant italic text-muted-foreground py-3">
                   Your memories are waiting to bloom into a beautiful reflection...
                 </p>
-                <Button onClick={generateReflection} variant="default" size="lg" className="shadow-sm">
+                <Button onClick={generateReflection} variant="default" size="default">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Generate Self Reflection
                 </Button>
