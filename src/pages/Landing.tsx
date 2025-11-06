@@ -33,8 +33,7 @@ const Landing = () => {
           />
           
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed animate-slide-up px-4">
-            An AI-powered memory keeper that gently captures the precious stories of your loved ones. 
-            Record, transcribe, and transform life experiences into beautiful digital notebooks.
+            A memory keeper that beautifully captures your stories and turns life's moments into timeless digital notebooks.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in px-4">
