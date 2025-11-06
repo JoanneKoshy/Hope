@@ -165,7 +165,11 @@ const Notebook = () => {
   };
 
   const handleShare = () => {
-    const shareUrl = `${window.location.origin}/shared/${id}`;
+    // Use the deployed URL instead of localhost
+    const baseUrl = import.meta.env.PROD 
+      ? window.location.origin 
+      : 'https://36214cc9-701a-484f-8b51-0ed026f84efa.lovableproject.com';
+    const shareUrl = `${baseUrl}/shared/${id}`;
     navigator.clipboard.writeText(shareUrl);
     toast({ title: "Link copied!", description: "Share this link with family and friends" });
   };
@@ -394,7 +398,11 @@ const Notebook = () => {
 
                           if (error) throw error;
 
-                          const shareUrl = `${window.location.origin}/shared-memory/${data.id}`;
+                          // Use the deployed URL instead of localhost
+                          const baseUrl = import.meta.env.PROD 
+                            ? window.location.origin 
+                            : 'https://36214cc9-701a-484f-8b51-0ed026f84efa.lovableproject.com';
+                          const shareUrl = `${baseUrl}/shared-memory/${data.id}`;
                           navigator.clipboard.writeText(shareUrl);
                           toast({ title: "Memory link copied!", description: "Share this specific memory" });
                         } catch (error: any) {

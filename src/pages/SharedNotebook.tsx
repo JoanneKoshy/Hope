@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { db } from "@/lib/firebase";
+import { useParams, useNavigate } from "react-router-dom";
+import { db, auth } from "@/lib/firebase";
 import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Smile, Frown, Meh } from "lucide-react";
@@ -20,10 +20,20 @@ interface NotebookData {
 
 const SharedNotebook = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [notebook, setNotebook] = useState<NotebookData | null>(null);
   const [memories, setMemories] = useState<Memory[]>([]);
 
   useEffect(() => {
+    // Check if user is authenticated
+    const user = auth.currentUser;
+    if (!user) {
+      // Store the intended destination
+      localStorage.setItem('redirectAfterAuth', `/shared/${id}`);
+      navigate("/auth");
+      return;
+    }
+
     const fetchData = async () => {
       // Fetch notebook
       const notebookDoc = await getDoc(doc(db, "notebooks", id!));
@@ -42,7 +52,7 @@ const SharedNotebook = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, navigate]);
 
   const getSentimentIcon = (sentiment?: string) => {
     switch (sentiment) {

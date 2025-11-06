@@ -26,6 +26,8 @@ const SharedMemory = () => {
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) {
+      // Store the intended destination
+      localStorage.setItem('redirectAfterAuth', `/shared-memory/${id}`);
       navigate("/auth");
       return;
     }

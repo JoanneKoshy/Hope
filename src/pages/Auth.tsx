@@ -22,7 +22,14 @@ const Auth = () => {
   useEffect(() => {
     // Redirect if already logged in
     if (!authLoading && user) {
-      navigate("/dashboard");
+      // Check if there's a redirect destination stored
+      const redirectPath = localStorage.getItem('redirectAfterAuth');
+      if (redirectPath) {
+        localStorage.removeItem('redirectAfterAuth');
+        navigate(redirectPath);
+      } else {
+        navigate("/dashboard");
+      }
     }
   }, [user, authLoading, navigate]);
 
@@ -38,7 +45,15 @@ const Auth = () => {
         await createUserWithEmailAndPassword(auth, email, password);
         toast({ title: "Account created successfully!" });
       }
-      navigate("/dashboard");
+      
+      // Check if there's a redirect destination
+      const redirectPath = localStorage.getItem('redirectAfterAuth');
+      if (redirectPath) {
+        localStorage.removeItem('redirectAfterAuth');
+        navigate(redirectPath);
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       toast({
         title: "Error",
