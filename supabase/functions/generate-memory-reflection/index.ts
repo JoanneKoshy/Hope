@@ -24,22 +24,15 @@ serve(async (req) => {
       preview: m.content.substring(0, 100),
     }));
 
-    const systemPrompt = `You are a poetic memory curator. Create a beautiful, reflective visualization of someone's memory collection. Use metaphors like a "garden of memories", "constellation of moments", or "tapestry of experiences". 
+    const systemPrompt = `You are a poetic memory curator. Create a beautiful, short quote about someone's memory collection. Use metaphors like a "garden of memories", "constellation of moments", or "tapestry of experiences". 
 
-Be warm, encouraging, and poetic. Keep it to 3-4 sentences that feel personal and meaningful. Focus on the emotional journey and growth.`;
+Be warm, encouraging, and poetic. Keep it to ONE SHORT SENTENCE - like an inspiring quote. Maximum 15-20 words. Focus on the emotional journey.`;
 
-    const userPrompt = `Create a poetic reflection for someone who has collected ${memories.length} memories across ${notebookCount} notebooks. 
+    const userPrompt = `Create a SHORT poetic quote for someone who has collected ${memories.length} memories across ${notebookCount} notebooks. 
 
-Memory sentiments breakdown:
-- Happy: ${memories.filter((m: any) => m.sentiment === "happy").length}
-- Sad: ${memories.filter((m: any) => m.sentiment === "sad").length}
-- Neutral: ${memories.filter((m: any) => m.sentiment === "neutral").length}
-- Stressed: ${memories.filter((m: any) => m.sentiment === "stressed").length}
+Memory sentiments: ${memories.filter((m: any) => m.sentiment === "happy").length} happy, ${memories.filter((m: any) => m.sentiment === "sad").length} sad, ${memories.filter((m: any) => m.sentiment === "neutral").length} neutral.
 
-Sample memory snippets:
-${memorySummary.slice(0, 5).map((m: any) => `- [${m.sentiment}] ${m.preview}...`).join("\n")}
-
-Generate a beautiful, poetic reflection about their memory garden.`;
+Generate ONE SHORT SENTENCE (15-20 words max) - an inspiring quote about their memory garden.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -73,7 +66,7 @@ Generate a beautiful, poetic reflection about their memory garden.`;
     }
 
     const data = await response.json();
-    const reflection = data.choices?.[0]?.message?.content || "Your memories bloom like flowers in a garden, each one a unique petal in the tapestry of your life's journey.";
+    const reflection = data.choices?.[0]?.message?.content || "Every memory is a star in your personal constellation of moments.";
 
     return new Response(
       JSON.stringify({ reflection }),
