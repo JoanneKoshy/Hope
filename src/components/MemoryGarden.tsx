@@ -14,8 +14,12 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
   const [error, setError] = useState<string>("");
 
   const generateReflection = async () => {
-    if (memories.length === 0) return;
+    if (memories.length === 0) {
+      console.log("MemoryGarden: No memories to generate reflection from");
+      return;
+    }
     
+    console.log("MemoryGarden: Starting reflection generation...");
     setLoading(true);
     setError("");
 
@@ -34,13 +38,15 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("MemoryGarden: Error response:", errorData);
         throw new Error(errorData.error || "Failed to generate reflection");
       }
 
       const data = await response.json();
+      console.log("MemoryGarden: Reflection generated:", data.reflection);
       setReflection(data.reflection);
     } catch (err) {
-      console.error("Error:", err);
+      console.error("MemoryGarden: Error:", err);
       setError(err instanceof Error ? err.message : "Failed to generate reflection");
     } finally {
       setLoading(false);
@@ -48,9 +54,10 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
   };
 
   useEffect(() => {
+    console.log("MemoryGarden: memories.length =", memories.length, "notebookCount =", notebookCount);
     // Only auto-generate if we have memories and haven't generated yet
-    // But skip the loading state by generating silently in the background
     if (memories.length > 0 && !reflection && !loading) {
+      console.log("MemoryGarden: Auto-generating reflection...");
       generateReflection();
     }
   }, [memories.length]);
@@ -91,7 +98,7 @@ export const MemoryGarden = ({ memories, notebookCount }: MemoryGardenProps) => 
           </div>
         ) : reflection ? (
           <div className="space-y-6 animate-fade-in">
-            <blockquote className="text-2xl leading-relaxed italic font-serif text-center py-6 px-4 border-l-4 border-primary/50">
+            <blockquote className="text-2xl md:text-3xl leading-relaxed font-serif text-center py-8 px-6 border-l-4 border-primary/50 bg-muted/30 rounded-r-lg" style={{ fontFamily: 'cursive' }}>
               "{reflection}"
             </blockquote>
             <div className="flex justify-center">
