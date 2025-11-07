@@ -64,9 +64,13 @@ const Auth = () => {
       } else if (error.code === "auth/user-disabled") {
         errorMessage = "This account has been disabled";
       } else if (error.code === "auth/user-not-found") {
-        errorMessage = "No account found with this email";
+        errorMessage = "No account found with this email. Please sign up first.";
       } else if (error.code === "auth/wrong-password") {
         errorMessage = "Incorrect password";
+      } else if (error.code === "auth/invalid-credential" || error.message?.includes("INVALID_LOGIN_CREDENTIALS")) {
+        errorMessage = isLogin 
+          ? "Invalid email or password. If you don't have an account, please sign up first." 
+          : "Unable to create account. Please try again.";
       } else if (error.code === "auth/email-already-in-use") {
         errorMessage = "An account already exists with this email";
       } else if (error.code === "auth/weak-password") {
