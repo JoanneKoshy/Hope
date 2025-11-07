@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "@/lib/firebase";
-import { collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { BookOpen, Plus, LogOut, Heart } from "lucide-react";
+import { BookOpen, Plus, LogOut, Heart, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { MemoryGarden } from "@/components/MemoryGarden";
 import { useAuth } from "@/contexts/AuthContext";
@@ -99,6 +100,21 @@ const Dashboard = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteNotebook = async (notebookId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    try {
+      await deleteDoc(doc(db, "notebooks", notebookId));
+      toast({ title: "Notebook deleted successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -213,12 +229,43 @@ const Dashboard = () => {
               {notebooks.map((notebook) => (
                 <Card
                   key={notebook.id}
-                  className="cursor-pointer hover:shadow-medium transition-all animate-fade-in"
+                  className="cursor-pointer hover:shadow-medium transition-all animate-fade-in relative"
                   onClick={() => navigate(`/notebook/${notebook.id}`)}
                 >
                   <CardHeader>
-                    <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center mb-3">
-                      <BookOpen className="w-6 h-6 text-primary-foreground" />
+                    <div className="flex items-start justify-between">
+                      <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center mb-3">
+                        <BookOpen className="w-6 h-6 text-primary-foreground" />
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Notebook?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will permanently delete "{notebook.title}" and all its memories. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={(e) => handleDeleteNotebook(notebook.id, e)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                     <CardTitle className="text-xl">{notebook.title}</CardTitle>
                     <CardDescription className="line-clamp-2">
