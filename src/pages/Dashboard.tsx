@@ -125,13 +125,14 @@ const Dashboard = () => {
 
   if (authLoading || initialLoading) {
     return (
-      <div className="min-h-screen bg-gradient-warm flex items-center justify-center">
-        <div className="text-center">
-          <Heart className="w-16 h-16 text-primary mx-auto mb-4 animate-float" />
-          <h2 className="text-2xl font-semibold mb-2 bg-gradient-primary bg-clip-text text-transparent">
-            Loading your memories...
-          </h2>
-          <p className="text-muted-foreground">Preparing your memory garden</p>
+      <div className="min-h-screen bg-gradient-warm flex items-center justify-center animate-fade-in">
+        <div className="text-center space-y-4">
+          <Heart className="w-16 h-16 text-primary mx-auto animate-float" />
+          <div className="space-y-2 opacity-0 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+            <h2 className="text-2xl font-semibold bg-gradient-primary bg-clip-text text-transparent">
+              Welcome back
+            </h2>
+          </div>
         </div>
       </div>
     );

@@ -40,11 +40,12 @@ const Auth = () => {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
-        toast({ title: "Welcome back!" });
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
-        toast({ title: "Account created successfully!" });
       }
+      
+      // Small delay for smooth transition
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       // Check if there's a redirect destination
       const redirectPath = localStorage.getItem('redirectAfterAuth');
